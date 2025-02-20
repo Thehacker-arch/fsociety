@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
-import axios, { Axios } from "axios";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/auth";
 
 type FormData = {
     name: string;
@@ -14,7 +15,18 @@ type FormData = {
 export default function Signup() {
     const { register, handleSubmit } = useForm<FormData>();
     const [error, setError] = useState<string | null>(null);
-    const router = useRouter();    
+    const router = useRouter();
+    const isAuthenticated = useAuth();
+    
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push('/')
+        }
+    }, [isAuthenticated, router]);
+    
+    if (isAuthenticated) {
+        return null;
+    }  
 
     const onSubmit = async(data: FormData) => {
         setError(null);

@@ -1,9 +1,9 @@
 "use client";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/auth";
 
 type LoginForm = {
     email: string;
@@ -14,6 +14,17 @@ export default function Login() {
     const { register, handleSubmit } = useForm<LoginForm>();
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
+    const isAuthenticated = useAuth();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push('/')
+        }
+    }, [isAuthenticated, router]);
+
+    if (isAuthenticated) {
+        return null;
+    }
 
     const onSubmit = async (data: LoginForm) => {
         setError(null); // Clear previous errors
